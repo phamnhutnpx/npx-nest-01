@@ -18,6 +18,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       isGlobal: true,
       envFilePath: ['.env.dev'],
     }),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
