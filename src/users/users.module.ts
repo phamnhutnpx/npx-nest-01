@@ -11,5 +11,6 @@ import { ValidationService } from 'src/utils/validateHelper';
   ],
   controllers: [UsersController],
   providers: [UsersService, ValidationService],
+  exports: [UsersService],
 })
 export class UsersModule {}

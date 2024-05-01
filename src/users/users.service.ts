@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { genSaltSync, hashSync } from 'bcryptjs';
-import mongoose, { Model } from 'mongoose';
+import { compareSync, genSaltSync, hashSync } from 'bcryptjs';
+import { Model } from 'mongoose';
+import { ValidationService } from 'src/utils/validateHelper';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './schemas/user.schema';
-import { ValidationService } from 'src/utils/validateHelper';
 
 @Injectable()
 export class UsersService {
@@ -20,6 +20,7 @@ export class UsersService {
     var hash = hashSync(password, salt);
     return hash;
   }
+  // Create
   async create(createUserDto: CreateUserDto) {
     const hashPassword = this.hashPassword(createUserDto.password);
     Object.assign(createUserDto, {
@@ -30,22 +31,28 @@ export class UsersService {
   }
 
   findAll() {
-    return `This action returns all users`;
+    return this.userModel.find();
   }
   // Get user by id
   findOne(id: string) {
     const idErr = this.validationService.checkValidId(id);
     if (idErr) return idErr;
 
-    return this.userModel
-      .findOne({
-        _id: id,
-      })
-      .then((data) => {
-        if (!data) return idErr;
-      });
+    return this.userModel.findOne({
+      _id: id,
+    });
+  }
+  // Get user by user name
+  findOneByUsername(username: string) {
+    return this.userModel.findOne({
+      email: username,
+    });
+  }
+  isValidPassword(passInput: string, passUser: string) {
+    return compareSync(passInput, passUser);
   }
 
+  // Update detail info
   async update(updateUserDto: UpdateUserDto) {
     const idErr = this.validationService.checkValidId(updateUserDto._id);
     if (idErr) return idErr;
@@ -58,6 +65,7 @@ export class UsersService {
     );
   }
 
+  // Remove
   async remove(id: string) {
     const idErr = this.validationService.checkValidId(id);
     if (idErr) return idErr;
