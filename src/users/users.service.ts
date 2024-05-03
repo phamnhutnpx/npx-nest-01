@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { compareSync, genSaltSync, hashSync } from 'bcryptjs';
-import { Model } from 'mongoose';
 import { ValidationService } from 'src/utils/validateHelper';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './schemas/user.schema';
+import { User, UserDocument } from './schemas/user.schema';
+import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(User.name) private userModel: SoftDeleteModel<UserDocument>,
     private readonly validationService: ValidationService,
   ) {}
 
@@ -69,6 +69,8 @@ export class UsersService {
   async remove(id: string) {
     const idErr = this.validationService.checkValidId(id);
     if (idErr) return idErr;
-    return await this.userModel.findByIdAndRemove(id);
+    return await this.userModel.softDelete({
+      _id: id,
+    });
   }
 }
