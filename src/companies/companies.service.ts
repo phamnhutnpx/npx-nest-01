@@ -5,12 +5,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Company, CompanyDocument } from './schema/company.schema';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { IUser } from 'src/users/users.interface';
+import { ValidationService } from 'src/utils/validateHelper';
 
 @Injectable()
 export class CompaniesService {
   constructor(
     @InjectModel(Company.name)
     private companyModel: SoftDeleteModel<CompanyDocument>,
+    private readonly validationService: ValidationService,
   ) {}
 
   async create(createCompanyDto: CreateCompanyDto, user: IUser) {
@@ -32,8 +34,16 @@ export class CompaniesService {
     return `This action returns a #${id} company`;
   }
 
-  update(id: number, updateCompanyDto: UpdateCompanyDto) {
-    return `This action updates a #${id} company`;
+  async update(updateCompanyDto: UpdateCompanyDto) {
+    const idErr = this.validationService.checkValidId(updateCompanyDto._id);
+    if (idErr) return idErr;
+
+    return await this.companyModel.updateOne(
+      {
+        _id: updateCompanyDto._id,
+      },
+      { ...updateCompanyDto },
+    );
   }
 
   remove(id: number) {
