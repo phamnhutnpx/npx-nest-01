@@ -7,18 +7,18 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { Public } from './decorator/customize';
 @Controller()
 export class AppController {
-  constructor(
-    private readonly appService: AppService,
-    private configService: ConfigService,
-    private authService: AuthService,
-  ) {}
+  // constructor(
+  //   private readonly appService: AppService,
+  //   private configService: ConfigService,
+  //   private authService: AuthService,
+  // ) {}
 
-  @Public()
-  @UseGuards(LocalAuthGuard)
-  @Post('auth/login')
-  async login(@Request() req) {
-    return this.authService.login(req.user);
-  }
+  // @Public()
+  // @UseGuards(LocalAuthGuard)
+  // @Post('auth/login')
+  // async login(@Request() req) {
+  //   return this.authService.login(req.user);
+  // }
 
   // @UseGuards(JwtAuthGuard)
   @Get('profile')
