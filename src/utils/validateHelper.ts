@@ -10,7 +10,7 @@ export class ValidationService {
   // Kiểm tra id và trả về thông báo tùy thuộc vào kết quả
   checkValidId(id: string): string {
     if (!this.isValidId(id)) {
-      return 'Không tìm thấy User';
+      return 'ID không hợp lệ';
     }
     return null; // Trả về null nếu id hợp lệ
   }
