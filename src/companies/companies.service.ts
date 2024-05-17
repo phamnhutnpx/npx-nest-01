@@ -86,4 +86,11 @@ export class CompaniesService {
     );
     return await this.companyModel.softDelete({ _id: id });
   }
+
+  uploadFile(file: Express.Multer.File) {
+    return {
+      fileName: file.filename,
+      path: file.path,
+    };
+  }
 }
